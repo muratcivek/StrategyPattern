@@ -1,0 +1,141 @@
+﻿@model StrategyPattern.Models.OrderViewModel
+
+@{
+    ViewData["Title"] = "Kargo Ücreti Hesaplama";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <div class="card-header bg-primary text-white p-4 rounded-top-4">
+                    <h4 class="mb-1">Kargo Ücreti Hesaplama</h4>
+                    <p class="mb-0">
+                        Sipariş tutarınızı ve kargo firmanızı seçin.
+                    </p>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-controller="Order"
+                          asp-action="Index"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="OrderTotal"
+                                   class="form-label fw-semibold">
+                                Sipariş Tutarı (TL)
+                            </label>
+
+                            <input asp-for="OrderTotal"
+                                   type="number"
+                                   step="0.01"
+                                   min="0"
+                                   class="form-control"
+                                   placeholder="Sipariş tutarını giriniz" />
+
+                            <span asp-validation-for="OrderTotal"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="SelectedCargo"
+                                   class="form-label fw-semibold">
+                                Kargo Firması
+                            </label>
+
+                            <select asp-for="SelectedCargo"
+                                    class="form-select">
+
+                                <option value="">
+                                    Kargo firması seçiniz
+                                </option>
+
+                                <option value="Aras Kargo">
+                                    Aras Kargo
+                                </option>
+
+                                <option value="DHL">
+                                    DHL
+                                </option>
+
+                                <option value="Yurtici Kargo">
+                                    Yurtici Kargo
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="SelectedCargo"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100 py-2">
+                            Kargo Ücretini Hesapla
+                        </button>
+
+                    </form>
+
+                    @if (Model?.CalculatedShippingCost != null)
+                    {
+                        <div class="mt-4">
+                            <div class="alert alert-success rounded-3">
+
+                                <h5 class="fw-bold mb-3">
+                                    Hesaplama Sonucu
+                                </h5>
+
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Sipariş Tutarı</span>
+                                    <strong>
+                                        @Model.OrderTotal.ToString("N2") TL
+                                    </strong>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Kargo Firması</span>
+                                    <strong>
+                                        @Model.SelectedCargo
+                                    </strong>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Kargo Ücreti</span>
+                                    <strong>
+                                        @Model.CalculatedShippingCost.Value.ToString("N2") TL
+                                    </strong>
+                                </div>
+
+                                <hr />
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">
+                                        Genel Toplam
+                                    </span>
+
+                                    <h4 class="fw-bold mb-0 text-success">
+                                        @Model.GrandTotal?.ToString("N2") TL
+                                    </h4>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
